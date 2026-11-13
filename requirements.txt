@@ -7,3 +7,4 @@ pyyaml==6.0.3
 pytest==9.2.0
 zstandard==0.25.0
 peft==0.21.2
+matplotlib==3.10.9
