@@ -17,8 +17,13 @@ I explore:
 The forgetting caused by an intruder dimension grows with the curvature of the pretraining loss along its direction.
 
 ---
-### Setup
-(Python 3.10)
+### Setup Guides
+
+<details>
+    
+<summary><b>Local Setup (development)</b></summary>
+
+- (Python 3.10)
 #### Install Dependencies
 ```bash
 python -m venv .venv
@@ -34,21 +39,82 @@ hf download WattsIshaan/OLMo-60m-192B-sam-cosine config.yaml model.pt --local-di
 hf download WattsIshaan/OLMo-60m-192B-adamw-cosine config.yaml model.pt --local-dir checkpoints/olmo-60m-adamw
 ```
 (Experiments convert to `transformers` Llama models)
-#### Build Data
+#### Build Tiny Data
 Tokenize Hugging Face data with `allenai/dolma2-tokenizer` (same as Watts et al.) and save 1024-token rows to `data/` as numpy files with JSON descriptions.
 ```bash
-# 20M held-out DCLM tokens from 100 random files for measuring forgetting
-python -m scripts.make_dclm_heldout
+# held-out DCLM tokens from random files for measuring forgetting
+python -m scripts.make_dclm_heldout --tokens 20000 --files 2 --out data/dclm_tiny.npy
 
-# 10M train + 1M val tokens of StarCoder Python for finetuning
-python -m scripts.make_starcoder
+# tokens of StarCoder Python for finetuning
+python -m scripts.make_starcoder --train-tokens 20000 --val-tokens 5000 --out-dir data/tiny
 ```
-### Run tests
+#### Run tests
 ```bash
 python -m pytest -v
 ```
 
+</details>
+
 ---
+
+<details>
+
+<summary><b>Reproduce Results on Cluster</b></summary>
+
+- NYU HPC Cloud Bursting.
+- Start a CPU session (`n2c48m24`) on [Open OnDemand](https://ood.burst.hpc.nyu.edu/) and open a terminal.
+
+<blockquote>
+
+<details>
+
+<summary><b>One Time Setup</b></summary>
+
+#### Get the Code
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub   # add to GitHub: Settings -> SSH keys
+git clone git@github.com:jni2003/lora-sam-forgetting.git && cd lora-sam-forgetting
+```
+#### Install Env
+Python runs inside a Singularity container, with packages in an overlay file. Set `IMAGE=` in `scripts/slurm/run_in_env.sh` to the image you use.
+```bash
+cp /share/apps/overlay-fs-ext3/overlay-15GB-500K.ext3.gz ~/lora-env.ext3.gz && gunzip ~/lora-env.ext3.gz
+singularity exec --overlay ~/lora-env.ext3:rw /share/apps/images/<CUDA_IMAGE>.sif /bin/bash
+# inside the container:
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+bash Miniforge3-Linux-x86_64.sh -b -p /ext3/miniforge3
+printf 'source /ext3/miniforge3/etc/profile.d/conda.sh\nexport PATH=/ext3/miniforge3/bin:$PATH\n' > /ext3/env.sh
+source /ext3/env.sh && conda install -y python=3.10 && pip install -r requirements.txt && hf auth login
+exit
+```
+#### Download Checkpoints and Build Data (one-time, CPU job)
+```bash
+sbatch scripts/slurm/prepare.sbatch
+```
+
+</details>
+
+<details>
+
+<summary><b>Run Experiments</b></summary>
+
+```bash
+sbatch scripts/slurm/eval_base.sbatch            # base-model losses
+sbatch scripts/slurm/finetune.sbatch sam 5e-4    # one run: BASE LR [LORA_RANK]
+sbatch scripts/slurm/finetune.sbatch adamw 5e-4
+bash scripts/slurm/run_in_env.sh python -m scripts.plot_forgetting
+squeue --me                                      # check jobs; scancel <JOB_ID> to cancel
+```
+End the session under **My Interactive Sessions** when done (closing the tab doesn't end it).
+
+</details>
+
+</blockquote>
+
+</details>
+
+---
+
 ### Joel Indurkar
 ### Science of Deep Learning (CSCI-GA.3033)
 ### NYU Courant - Fall 2026
