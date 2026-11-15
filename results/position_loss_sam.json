@@ -1,0 +1,44 @@
+{
+  "device": "cpu",
+  "counts": {
+    "pos 1-15": 14655,
+    "pos 16-127": 109424,
+    "pos 128-511": 375168,
+    "pos 512-1023": 500224,
+    "first token of a doc (after EOS)": 749,
+    "predicting EOS": 749,
+    "all other tokens": 997973
+  },
+  "results": {
+    "checkpoints/olmo-60m-sam": {
+      "all": 3.6692512035369873,
+      "pos 1-15": 4.884347438812256,
+      "pos 16-127": 3.9628512859344482,
+      "pos 128-511": 3.653714895248413,
+      "pos 512-1023": 3.581080198287964,
+      "first token of a doc (after EOS)": 6.887407302856445,
+      "predicting EOS": 3.698509454727173,
+      "all other tokens": 3.6668145656585693
+    },
+    "checkpoints/finetuned/sam_lora8_lr5e-4": {
+      "all": 3.481396436691284,
+      "pos 1-15": 4.907007217407227,
+      "pos 16-127": 3.732720375061035,
+      "pos 128-511": 3.459825277328491,
+      "pos 512-1023": 3.400831460952759,
+      "first token of a doc (after EOS)": 6.899138927459717,
+      "predicting EOS": 3.655017137527466,
+      "all other tokens": 3.478700876235962
+    },
+    "checkpoints/finetuned/sam_full_lr3e-4": {
+      "all": 3.759038209915161,
+      "pos 1-15": 5.449757099151611,
+      "pos 16-127": 4.020410060882568,
+      "pos 128-511": 3.7291419506073,
+      "pos 512-1023": 3.674752950668335,
+      "first token of a doc (after EOS)": 11.811474800109863,
+      "predicting EOS": 3.9945783615112305,
+      "all other tokens": 3.7528183460235596
+    }
+  }
+}
