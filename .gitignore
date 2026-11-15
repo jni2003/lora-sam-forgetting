@@ -28,3 +28,6 @@ docs/
 
 # Personal decision log (raw notes for the write-up)
 decision-log.md
+
+# Personal GPU-hour tracking
+gpu-usage.md

@@ -7,7 +7,7 @@
 #SBATCH --account=csci_ga_3033-134-2026fa
 #SBATCH --partition=n2c48m24
 #SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
+#SBATCH --mem=16G  # n2c48m24 nodes have ~24 GB; this job needs ~1-2 GB
 #SBATCH --time=03:00:00
 #SBATCH --output=slurm-%x-%j.out
 

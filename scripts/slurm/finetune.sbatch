@@ -7,9 +7,10 @@
 # Writes results/<run name>.json (commit it) and checkpoints/finetuned/<run name>/ (weights, not committed).
 #SBATCH --job-name=finetune
 #SBATCH --account=csci_ga_3033-134-2026fa
-#SBATCH --partition=g2-standard-12
+#SBATCH --partition=c12m85-a100-1  # A100 40GB (L4 nodes failed to boot on 2026-11-14)
 #SBATCH --gres=gpu:1
-#SBATCH --time=01:00:00
+#SBATCH --no-requeue           # a failed node boot ends the job instead of retrying (caps GPU-hours)
+#SBATCH --time=01:00:00        # includes ~7 min node boot
 #SBATCH --output=slurm-%x-%j.out
 
 set -euo pipefail
