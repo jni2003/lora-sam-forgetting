@@ -8,7 +8,7 @@
 #
 # Set these two once during cluster setup (see the README, "Cluster" section):
 OVERLAY="$HOME/lora-env.ext3"                                       # your overlay file with the conda env
-IMAGE="/share/apps/images/CHANGE_ME.sif"                            # a CUDA image from /share/apps/images
+IMAGE="/scratch/work/public/singularity/cuda12.6.3-cudnn9.5.1-ubuntu22.04.5.sif"  # CUDA 12 + Ubuntu 22.04 base
 #
 # Usage (from the repo root, inside a job script):  bash scripts/slurm/run_in_env.sh python -m scripts.evaluate ...
 
