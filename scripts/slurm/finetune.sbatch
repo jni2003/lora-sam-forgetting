@@ -10,7 +10,7 @@
 #SBATCH --partition=c12m85-a100-1  # A100 40GB (L4 nodes failed to boot on 2026-11-14)
 #SBATCH --gres=gpu:1
 #SBATCH --no-requeue           # a failed node boot ends the job instead of retrying (caps GPU-hours)
-#SBATCH --time=01:00:00        # includes ~7 min node boot
+#SBATCH --time=00:30:00        # includes node boot (up to ~7 min); a run is ~6.5 min
 #SBATCH --output=slurm-%x-%j.out
 
 set -euo pipefail

@@ -18,12 +18,13 @@ import torch.nn.functional as F
 
 
 @torch.no_grad()  # evaluation only: no gradients, which saves memory
-def row_losses(model, rows, batchSize, device):
-    """Return a NumPy array with the average next-token loss of each row.
+def token_losses(model, rows, batchSize, device):
+    """Return a NumPy array of shape (numRows, seqLen - 1): the loss on every predicted token.
 
     rows: uint32 array of shape (numRows, seqLen) of token IDs.
     Each row predicts its own tokens 2..seqLen from the tokens before them, so a row of 1024
     tokens contributes 1023 predictions (the first token has nothing before it).
+    Column t is the loss of predicting token t+1 from tokens 0..t.
     """
     model.eval()
     losses = []
@@ -36,8 +37,13 @@ def row_losses(model, rows, batchSize, device):
             inputIds[:, 1:].flatten(),             # (batch * (seqLen-1),)
             reduction="none",
         ).view(inputIds.shape[0], -1)
-        losses.append(tokenLosses.mean(dim=1).cpu())
+        losses.append(tokenLosses.cpu())
     return torch.cat(losses).numpy()
+
+
+def row_losses(model, rows, batchSize, device):
+    """Return a NumPy array with the average next-token loss of each row."""
+    return token_losses(model, rows, batchSize, device).mean(axis=1)
 
 
 def summarize(rowLoss, fileIds=None):
