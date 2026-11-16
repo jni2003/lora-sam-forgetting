@@ -68,7 +68,7 @@ python -m pytest -v
 
 <details>
 
-<summary><b>One Time Setup</b></summary>
+<summary><b>First Time Setup</b></summary>
 
 #### Get the Code
 ```bash
@@ -76,15 +76,16 @@ ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 && cat ~/.ssh/id_ed25519.pub   # add 
 git clone git@github.com:jni2003/lora-sam-forgetting.git && cd lora-sam-forgetting
 ```
 #### Install Env
-Python runs inside a Singularity container, with packages in an overlay file. Set `IMAGE=` in `scripts/slurm/run_in_env.sh` to the image you use.
+Python runs inside a Singularity container, with packages in an overlay file. The image is set in `scripts/slurm/run_in_env.sh`.
 ```bash
 cp /share/apps/overlay-fs-ext3/overlay-15GB-500K.ext3.gz ~/lora-env.ext3.gz && gunzip ~/lora-env.ext3.gz
-singularity exec --overlay ~/lora-env.ext3:rw /share/apps/images/<CUDA_IMAGE>.sif /bin/bash
+singularity exec --overlay ~/lora-env.ext3:rw /scratch/work/public/singularity/cuda12.6.3-cudnn9.5.1-ubuntu22.04.5.sif /bin/bash
 # inside the container:
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
 bash Miniforge3-Linux-x86_64.sh -b -p /ext3/miniforge3
-printf 'source /ext3/miniforge3/etc/profile.d/conda.sh\nexport PATH=/ext3/miniforge3/bin:$PATH\n' > /ext3/env.sh
-source /ext3/env.sh && conda install -y python=3.10 && pip install -r requirements.txt && hf auth login
+printf 'unset -f which\nsource /ext3/miniforge3/etc/profile.d/conda.sh\nexport PATH=/ext3/miniforge3/bin:$PATH\nconda activate lora\n' > /ext3/env.sh
+source /ext3/miniforge3/etc/profile.d/conda.sh && conda create -y -n lora python=3.10
+source /ext3/env.sh && pip install -r requirements.txt && hf auth login
 exit
 ```
 #### Download Checkpoints and Build Data (one-time, CPU job)
@@ -99,11 +100,12 @@ sbatch scripts/slurm/prepare.sbatch
 <summary><b>Run Experiments</b></summary>
 
 ```bash
-sbatch scripts/slurm/eval_base.sbatch            # base-model losses
-sbatch scripts/slurm/finetune.sbatch sam 5e-4    # one run: BASE LR [LORA_RANK]
-sbatch scripts/slurm/finetune.sbatch adamw 5e-4
-bash scripts/slurm/run_in_env.sh python -m scripts.plot_forgetting
-squeue --me                                      # check jobs; scancel <JOB_ID> to cancel
+sbatch scripts/slurm/eval_base.sbatch               # base-model losses
+sbatch scripts/slurm/finetune.sbatch sam 5e-4       # one run: BASE LR [LORA_RANK] [SEED]
+sbatch scripts/slurm/finetune.sbatch adamw 5e-4 8   # e.g. LoRA rank 8
+sbatch --account=csci_ga_3033-134-2026fa --partition=n2c48m24 --mem=16G --time=00:30:00 --job-name=intruders --output=slurm-%x-%j.out --wrap "bash scripts/slurm/run_in_env.sh python -m scripts.countIntruders --runs checkpoints/finetuned/*"   # intruder counts (CPU)
+bash scripts/slurm/run_in_env.sh python -m scripts.plot_forgetting --panels --out results/forgetting_panels.png
+squeue --me                                         # check jobs; scancel <JOB_ID> to cancel
 ```
 End the session under **My Interactive Sessions** when done (closing the tab doesn't end it).
 
