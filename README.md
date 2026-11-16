@@ -123,6 +123,7 @@ End the session under **My Interactive Sessions** when done (closing the tab doe
 
 ![Forgetting vs fine-tuning loss](results/forgetting_panels.png)
 
+Higher = more forgetting (increase in held-out DCLM loss). Runs are compared at equal StarCoder loss, so less forgetting can't come from learning less.
 - **Full finetuning:** SAM forgets less than AdamW at every learning rate (1e-4 to 8e-4), reproducing Watts et al.
 - **LoRA rank 8:** SAM forgets only slightly less (0.02–0.03, reproduced on a second seed); rank 8 learns much less than full finetuning.
 - **LoRA rank 64:** SAM forgets clearly less (0.07–0.14) and forms about half as many intruder dimensions at learning rate 2e-3. AdamW diverged at learning rate 3e-3 where SAM trained normally.
