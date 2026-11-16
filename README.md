@@ -117,6 +117,21 @@ End the session under **My Interactive Sessions** when done (closing the tab doe
 
 ---
 
+### Current Results (preliminary, Nov 16 2026)
+
+60M SAM/AdamW pair from Watts et al., fine-tuned on 10M tokens of StarCoder Python. Forgetting = change in held-out DCLM loss.
+
+![Forgetting vs fine-tuning loss](results/forgetting_panels.png)
+
+- **Full finetuning:** SAM forgets less than AdamW at every learning rate (1e-4 to 8e-4), reproducing Watts et al.
+- **LoRA rank 8:** SAM forgets only slightly less (0.02–0.03, reproduced on a second seed); rank 8 learns much less than full finetuning.
+- **LoRA rank 64:** SAM forgets clearly less (0.07–0.14) and forms about half as many intruder dimensions at learning rate 2e-3. AdamW diverged at learning rate 3e-3 where SAM trained normally.
+- **Not yet tested:** curvature along intruders (whether the remaining intruders sit in flatter directions).
+
+Result files are in [`results/`](results/): one JSON per run, base-model evals, and intruder counts (`intruders.json`).
+
+---
+
 ### Joel Indurkar
 ### Science of Deep Learning (CSCI-GA.3033)
 ### NYU Courant - Fall 2026
