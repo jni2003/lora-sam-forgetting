@@ -51,6 +51,7 @@ startTime = time.time()
 
 model = load_olmo_as_llama(args.model).to(device)
 if args.lora_rank is not None:
+    torch.manual_seed(args.seed)  # seed the LoRA adapters' random init too (before 2026-11-16 only the data order was seeded)
     alpha = args.lora_alpha if args.lora_alpha is not None else 2 * args.lora_rank
     model = add_lora(model, args.lora_rank, alpha)
 numTrainable = sum(p.numel() for p in model.parameters() if p.requires_grad)

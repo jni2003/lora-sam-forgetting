@@ -34,6 +34,10 @@ baseDclm = {
     base: json.loads((resultsDir / f"base_eval_{base}.json").read_text())["datasets"]["dclm_heldout"]["loss"]
     for base in ["sam", "adamw"]
 }
+baseStarcoder = {  # base models' StarCoder val loss, to spot diverged runs
+    base: json.loads((resultsDir / f"base_eval_{base}.json").read_text())["datasets"]["starcoder_val"]["loss"]
+    for base in ["sam", "adamw"]
+}
 
 points = []  # (base, method, lr, fineTuneLoss, forgetting)
 for path in sorted(resultsDir.glob("*.json")):
@@ -48,6 +52,9 @@ for path in sorted(resultsDir.glob("*.json")):
         continue
     method = "full" if rank is None else f"LoRA r{rank}"
     fineTuneLoss = run["eval"]["starcoder_val"]["loss"]
+    if fineTuneLoss > baseStarcoder[base]:
+        print(f"skipping {path.name}: diverged (StarCoder loss {fineTuneLoss:.2f} > base {baseStarcoder[base]:.2f})")
+        continue  # worse on StarCoder than before fine-tuning = training blew up, not a point on the curve
     forgetting = run["eval"]["dclm_heldout"]["loss"] - baseDclm[base]
     points.append((base, method, run["args"]["lr"], fineTuneLoss, forgetting))
 
