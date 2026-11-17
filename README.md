@@ -106,6 +106,7 @@ sbatch scripts/slurm/finetune.sbatch adamw 5e-4 8   # e.g. LoRA rank 8
 sbatch --account=csci_ga_3033-134-2026fa --partition=n2c48m24 --mem=16G --time=00:30:00 --job-name=intruders --output=slurm-%x-%j.out --wrap "bash scripts/slurm/run_in_env.sh python -m scripts.countIntruders --runs checkpoints/finetuned/*"   # intruder counts (CPU)
 bash scripts/slurm/run_in_env.sh python -m scripts.plot_forgetting --panels --out results/forgetting_panels.png
 squeue --me                                         # check jobs; scancel <JOB_ID> to cancel
+python -m scripts.plotIntruders --eps 0.6 --out results/intruders_vs_forgetting.png    # intruder count vs forgetting plot
 ```
 End the session under **My Interactive Sessions** when done (closing the tab doesn't end it).
 
