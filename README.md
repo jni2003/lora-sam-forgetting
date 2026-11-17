@@ -129,7 +129,12 @@ Higher = more forgetting (increase in held-out DCLM loss). Runs are compared at 
 - **LoRA rank 64:** SAM forgets clearly less (0.07–0.14) and forms about half as many intruder dimensions at learning rate 2e-3. AdamW diverged at learning rate 3e-3 where SAM trained normally.
 - **Not yet tested:** curvature along intruders (whether the remaining intruders sit in flatter directions).
 
-Result files are in [`results/`](results/): one JSON per run, base-model evals, and intruder counts (`intruders.json`).
+**Forgetting vs intruder counts**
+![Forgetting vs intruder count](results/intruders_vs_forgetting.png)
+
+For each finetuning method, runs with more intruders forget more, but intruder count doesn't predict forgetting across methods.
+
+Result files are in [`results/`](results/): one JSON/run, base model evaluations, and intruder counts (`intruders.json`).
 
 ---
 
