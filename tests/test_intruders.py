@@ -3,7 +3,7 @@
 
 import torch
 
-from src.intruders import countIntruders, leftSingular, maxSimilarities
+from src.intruders import countIntruders, leftSingular, maxSimilarities, topSingularTriplets
 
 
 # A fake "pretrained" matrix whose directions are stable, so only what we add can create intruders
@@ -44,3 +44,13 @@ def test_planted_rank_one_direction_is_flagged():
     assert sims[0] < 0.5                      # the top vector is the intruder
     assert 20 < sigmas[0] < 25                # about the planted strength (W0 adds a little along u)
     assert countIntruders(sims, 0.5) == 1     # and it is the only one
+
+
+# The curvature script rebuilds each top vector's rank-one piece σ·u vᵀ from these triplets
+def test_top_triplets_match_left_singular_and_rebuild_the_matrix():
+    W = baseMatrix(n=32)
+    U, S, Vh = topSingularTriplets(W, k=32)
+    leftU, leftS = leftSingular(W)
+    assert torch.allclose(U, leftU) and torch.allclose(S, leftS)  # same u and σ the intruder counts used
+    rebuilt = sum(S[i] * torch.outer(U[:, i], Vh[i]) for i in range(32))  # all rank-one pieces add back to W
+    assert torch.allclose(rebuilt, W.double(), atol=1e-10)

@@ -25,6 +25,12 @@ def maxSimilarities(U0, Wt, k=10): # For top-k singular vectors of Wt: max |cos|
     return sims.max(dim=0).values.tolist(), St[:k].tolist() # Returns two float lists of length k
 
 
+# Not part of Algorithm 1: the curvature step needs each vector's full rank-one piece σ·u vᵀ, so v too
+def topSingularTriplets(W, k=10): # (U[:, :k], S[:k], Vh[:k]) of W in float64, largest σ first
+    U, S, Vh = torch.linalg.svd(W.double(), full_matrices=False)  # same call as leftSingular, so u and σ match it
+    return U[:, :k], S[:k], Vh[:k]
+
+
 # Lines 7-10 of Algorithm 1. Count vectors below epsilon
 def countIntruders(maxSims, eps):
     return sum(s < eps for s in maxSims) # num of top k vectors whose best match from the
