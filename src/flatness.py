@@ -11,6 +11,10 @@ and give a scale for the per-intruder κ. Both only need Hessian-vector products
 
 The parameter set is a list of names, e.g. the 56 attention/MLP matrices (33.6M weights), so each
 Lanczos vector costs 134 MB in float32 instead of 545 MB for the whole model with its embeddings.
+
+The loss comes as a list of equal-size row chunks (src/curvature.py makeChunkedLanguageModelLosses);
+H·v is averaged over them, which is exact and keeps one chunk's graph in memory. Pass [computeLoss]
+for a single loss.
 """
 
 import torch
@@ -30,18 +34,23 @@ def unflattenVector(vector, names, shapes): # inverse of flattenDirection: {name
     return direction
 
 
-def makeFlatHessianVectorProduct(computeLoss, model, names): # function: flat vector v -> flat H·v over the named parameters
+def makeFlatHessianVectorProduct(lossChunks, model, names): # function: flat vector v -> flat H·v over the named parameters
     shapes = [dict(model.named_parameters())[name].shape for name in names]
 
     def flatHessianVectorProduct(vector):
-        product = hessianVectorProduct(computeLoss, model, unflattenVector(vector, names, shapes))
-        return flattenDirection(product, names)
+        direction = unflattenVector(vector, names, shapes)
+        # Running sum, not a stacked list: each product is as large as the parameter set
+        total = torch.zeros_like(vector)
+        for computeLoss in lossChunks:
+            total += flattenDirection(hessianVectorProduct(computeLoss, model, direction), names)
+        averageProduct = total / len(lossChunks)
+        return averageProduct
 
     return flatHessianVectorProduct
 
 
-def lanczosEigenvalues(computeLoss, model, names, numSteps=20, seed=0): # approximate extreme Hessian eigenvalues, largest first
-    applyHessian = makeFlatHessianVectorProduct(computeLoss, model, names)
+def lanczosEigenvalues(lossChunks, model, names, numSteps=20, seed=0): # approximate extreme Hessian eigenvalues, largest first
+    applyHessian = makeFlatHessianVectorProduct(lossChunks, model, names)
     numWeights = sum(dict(model.named_parameters())[name].numel() for name in names)
     firstParameter = next(model.parameters())
     start = torch.randn(numWeights, generator=torch.Generator().manual_seed(seed), dtype=firstParameter.dtype)
@@ -74,8 +83,8 @@ def lanczosEigenvalues(computeLoss, model, names, numSteps=20, seed=0): # approx
     return eigenvaluesLargestFirst
 
 
-def hutchinsonTrace(computeLoss, model, names, numSamples=50, seed=0): # (trace estimate, its standard error)
-    applyHessian = makeFlatHessianVectorProduct(computeLoss, model, names)
+def hutchinsonTrace(lossChunks, model, names, numSamples=50, seed=0): # (trace estimate, its standard error)
+    applyHessian = makeFlatHessianVectorProduct(lossChunks, model, names)
     numWeights = sum(dict(model.named_parameters())[name].numel() for name in names)
     firstParameter = next(model.parameters())
     generator = torch.Generator().manual_seed(seed)
