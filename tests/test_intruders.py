@@ -3,7 +3,7 @@
 
 import torch
 
-from src.intruders import countIntruders, leftSingular, maxSimilarities, topSingularTriplets
+from src.intruders import countIntruders, leftSingular, maxSimilarities, splitByThreshold, topSingularTriplets
 
 
 # A fake "pretrained" matrix whose directions are stable, so only what we add can create intruders
@@ -54,3 +54,11 @@ def test_top_triplets_match_left_singular_and_rebuild_the_matrix():
     assert torch.allclose(U, leftU) and torch.allclose(S, leftS)  # same u and σ the intruder counts used
     rebuilt = sum(S[i] * torch.outer(U[:, i], Vh[i]) for i in range(32))  # all rank-one pieces add back to W
     assert torch.allclose(rebuilt, W.double(), atol=1e-10)
+
+
+# The analysis script relabels saved entries at any ε; an entry exactly at ε is not an intruder (Definition 3.1: "< ϵ")
+def test_split_by_threshold_is_strictly_below_eps():
+    entries = [{"maxSim": 0.2}, {"maxSim": 0.6}, {"maxSim": 0.9}]
+    intruders, others = splitByThreshold(entries, 0.6)
+    assert [e["maxSim"] for e in intruders] == [0.2]
+    assert [e["maxSim"] for e in others] == [0.6, 0.9]

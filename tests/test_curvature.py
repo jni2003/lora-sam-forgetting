@@ -6,7 +6,7 @@ import torch
 from torch.func import functional_call
 from transformers import LlamaConfig, LlamaForCausalLM
 
-from src.curvature import (directionalCurvature, finiteDifferenceCurvature, hessianVectorProduct,
+from src.curvature import (directionalCurvature, finiteDifferenceCurvature, hessianVectorProduct, intruderForgettingShare,
                            innerProduct, makeLanguageModelLoss, rankOneDirection)
 
 
@@ -139,3 +139,12 @@ def test_rank_one_intruder_direction_on_a_tiny_llama():
     # float32, so each loss value carries rounding noise, which the finite difference divides by ε².
     dHd, _ = directionalCurvature(computeLoss, model, direction)
     assert abs(finiteDifferenceCurvature(computeLoss, model, direction, eps=3e-2) - dHd) < 1e-2 * abs(dHd)
+
+
+def test_intruder_forgetting_share_uses_update_size_not_sigma():
+    # σ and the update's size along u differ on purpose: the share must use the update's size.
+    intruders = [{"sigma": 10.0, "updateNormAlongU": 2.0, "kappa": 0.5},
+                 {"sigma": 4.0, "updateNormAlongU": 3.0, "kappa": -0.1}]  # κ can be negative
+    expected = 0.5 * 2.0**2 * 0.5 + 0.5 * 3.0**2 * (-0.1)  # = 1.0 - 0.45 = 0.55, worked by hand
+    assert abs(intruderForgettingShare(intruders) - expected) < 1e-12
+    assert intruderForgettingShare([]) == 0  # no intruders, no share

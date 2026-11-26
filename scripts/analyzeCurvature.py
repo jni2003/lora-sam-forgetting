@@ -18,6 +18,9 @@ from pathlib import Path
 
 import numpy as np
 
+from src.curvature import intruderForgettingShare
+from src.intruders import splitByThreshold
+
 parser = argparse.ArgumentParser()
 parser.add_argument("--curvature", default="results/curvature.json")
 parser.add_argument("--results-dir", default="results", help="holds <run>.json and base_eval_<base>.json")
@@ -33,25 +36,11 @@ def measuredForgetting(runName, base): # DCLM loss after fine-tuning minus the b
     return forgetting
 
 
-def splitByThreshold(runData, eps): # (intruder entries, other top-k entries) across all matrices
-    entries = [entry for matrixEntries in runData["matrices"].values() for entry in matrixEntries]
-    intruders = [entry for entry in entries if entry["maxSim"] < eps]
-    others = [entry for entry in entries if entry["maxSim"] >= eps]
-    return intruders, others
-
-
 def describeKappas(kappas): # "n=.., median .., mean .." for a list of κ, or n=0
     if not kappas:
         return "n=0"
     description = f"n={len(kappas)}, median {np.median(kappas):.3g}, mean {np.mean(kappas):.3g}"
     return description
-
-
-def intruderForgettingShare(intruders): # Σ ½ ‖uᵀΔW‖² κ: Watts et al. Eq. 3 applied to each intruder's piece of the update
-    # Approximate: κ is measured along u vᵀ, while the update's piece is u (uᵀΔW); the two match
-    # when the intruder is nearly new (Δᵀu ≈ σ v). Cross terms between intruders are ignored.
-    share = sum(0.5 * entry["updateNormAlongU"] ** 2 * entry["kappa"] for entry in intruders)
-    return share
 
 
 curvature = json.loads(Path(args.curvature).read_text())
@@ -65,8 +54,9 @@ for base, matrices in curvature["randomBaselines"].items():
 # Per run: intruders vs other top directions, then the intruders' rough share of forgetting
 for runName, runData in sorted(curvature["runs"].items()):
     print(f"\n{runName}   measured forgetting {measuredForgetting(runName, runData['base']):+.3f}")
+    entries = [entry for matrixEntries in runData["matrices"].values() for entry in matrixEntries]
     for eps in args.eps:
-        intruders, others = splitByThreshold(runData, eps)
+        intruders, others = splitByThreshold(entries, eps)
         print(f"  ε={eps}: intruders {describeKappas([e['kappa'] for e in intruders])}"
               f" | other top {describeKappas([e['kappa'] for e in others])}"
               f" | intruder share ≈ {intruderForgettingShare(intruders):+.3g}")

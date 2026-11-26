@@ -31,6 +31,13 @@ def topSingularTriplets(W, k=10): # (U[:, :k], S[:k], Vh[:k]) of W in float64, l
     return U[:, :k], S[:k], Vh[:k]
 
 
+# Lines 7-10 of Algorithm 1 on saved results: which saved top-k entries are intruders at this ε
+def splitByThreshold(entries, eps): # (intruders, others) from dicts with a "maxSim" key, e.g. results/curvature.json entries
+    intruders = [entry for entry in entries if entry["maxSim"] < eps]  # strictly below ε, as in Definition 3.1
+    others = [entry for entry in entries if entry["maxSim"] >= eps]
+    return intruders, others
+
+
 # Lines 7-10 of Algorithm 1. Count vectors below epsilon
 def countIntruders(maxSims, eps):
     return sum(s < eps for s in maxSims) # num of top k vectors whose best match from the

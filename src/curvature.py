@@ -70,6 +70,15 @@ def rankOneDirection(model, name, u, sigma, v):  # σ·u vᵀ in one weight matr
     return {name: intruderPiece}
 
 
+def intruderForgettingShare(intruders): # Σ ½ ‖uᵀΔW‖² κ over intruder entries: Watts et al. Eq. 3 per intruder's piece of the update
+    # Uses the update's size along u (updateNormAlongU), not σ: σ measures the fine-tuned weight's
+    # piece, which for directions the base already had is mostly base weights, not change.
+    # Approximate: κ is measured along u vᵀ, the update's piece is u (uᵀΔW); they match when the
+    # intruder is nearly new (Δᵀu ≈ σ v). Cross terms between intruders are ignored.
+    share = sum(0.5 * entry["updateNormAlongU"] ** 2 * entry["kappa"] for entry in intruders)
+    return share
+
+
 def makeLanguageModelLoss(inputIds):  # function: model -> mean next-token loss on fixed token rows
     # Computed here, not with model(labels=...).loss, because transformers casts the scores to
     # float32 there, which hides small loss changes in float64 checks.
