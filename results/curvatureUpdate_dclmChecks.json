@@ -1,0 +1,74 @@
+{
+ "settings": {
+  "rows": 8,
+  "rowsPerChunk": 1,
+  "data": "data/dclm_heldout.npy",
+  "minutes": 0.5963915586471558,
+  "peakGpuMemoryGB": 6.61136384
+ },
+ "runs": {
+  "adamw_cooldown_dclm_lr5e-4": {
+   "base": "adamw",
+   "measuredForgetting": -0.07304120063781738,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 36.639404745821594,
+    "kappa": 0.028763361186831093,
+    "gradientTerm": -3.311322472989559,
+    "halfDHd": 19.306629300117493,
+    "predictedChange": 15.995306827127934,
+    "exactChangeOnRows": -0.06647118926048279,
+    "finiteDifferenceDHd": {
+     "0.1": 30.956068634986874,
+     "0.03": 37.79964314566719
+    },
+    "dHd": 38.613258600234985
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 14.426956558588635,
+    "kappa": 0.173484198293122,
+    "gradientTerm": -3.0940371304750443,
+    "halfDHd": 18.054246842861176,
+    "predictedChange": 14.960209712386131,
+    "exactChangeOnRows": -0.08133256435394287,
+    "finiteDifferenceDHd": {
+     "0.1": 29.025664925575253,
+     "0.03": 35.34790542390612
+    },
+    "dHd": 36.10849368572235
+   }
+  },
+  "sam_cooldown_dclm_lr5e-4": {
+   "base": "sam",
+   "measuredForgetting": -0.12423396110534668,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 40.52107500269856,
+    "kappa": 0.006860262832703446,
+    "gradientTerm": -1.6153134554624557,
+    "halfDHd": 5.632130071520805,
+    "predictedChange": 4.01681661605835,
+    "exactChangeOnRows": -0.11385884881019592,
+    "finiteDifferenceDHd": {
+     "0.1": 11.62208318710327,
+     "0.03": 11.324683825174969
+    },
+    "dHd": 11.26426014304161
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 15.073707562013658,
+    "kappa": 0.044579646894805314,
+    "gradientTerm": -1.4170825146138668,
+    "halfDHd": 5.064619228243828,
+    "predictedChange": 3.647536713629961,
+    "exactChangeOnRows": -0.14755302667617798,
+    "finiteDifferenceDHd": {
+     "0.1": 10.514122247695921,
+     "0.03": 10.189678933885363
+    },
+    "dHd": 10.129238456487656
+   }
+  }
+ },
+ "skipped": []
+}
