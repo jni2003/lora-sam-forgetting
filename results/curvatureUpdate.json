@@ -1,0 +1,857 @@
+{
+ "settings": {
+  "rows": 8,
+  "rowsPerChunk": 1,
+  "data": "data/dclm_heldout.npy",
+  "minutes": 5.826716788609823,
+  "peakGpuMemoryGB": 6.61136384
+ },
+ "runs": {
+  "adamw_full_lr1e-4": {
+   "base": "adamw",
+   "measuredForgetting": -0.12117624282836914,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 28.163020666784977,
+    "kappa": 0.0009120403959659001,
+    "gradientTerm": -0.49486797861754894,
+    "halfDHd": 0.36169503442943096,
+    "predictedChange": -0.13317294418811798,
+    "exactChangeOnRows": -0.10587695240974426,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7213890552520751,
+     "0.03": 0.723401705423991
+    },
+    "dHd": 0.7233900688588619
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 4.264886089051202,
+    "kappa": 0.03663281483463903,
+    "gradientTerm": -0.4128485871478915,
+    "halfDHd": 0.33316177502274513,
+    "predictedChange": -0.07968681212514639,
+    "exactChangeOnRows": -0.09473133087158203,
+    "finiteDifferenceDHd": {
+     "0.1": 0.6648510694503783,
+     "0.03": 0.6662805875142416
+    },
+    "dHd": 0.6663235500454903
+   }
+  },
+  "adamw_full_lr2e-4": {
+   "base": "adamw",
+   "measuredForgetting": 0.04618430137634277,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 43.73593202062164,
+    "kappa": 0.0008245168207241977,
+    "gradientTerm": -0.6196365617215633,
+    "halfDHd": 0.7885809764266014,
+    "predictedChange": 0.16894441470503807,
+    "exactChangeOnRows": 0.055459439754486084,
+    "finiteDifferenceDHd": {
+     "0.1": 1.5525490045547483,
+     "0.03": 1.5721718470255532
+    },
+    "dHd": 1.5771619528532028
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 7.135145949474582,
+    "kappa": 0.02714057357346398,
+    "gradientTerm": -0.49002606607973576,
+    "halfDHd": 0.6908674761652946,
+    "predictedChange": 0.2008414100855589,
+    "exactChangeOnRows": 0.028329551219940186,
+    "finiteDifferenceDHd": {
+     "0.1": 1.3791739940643308,
+     "0.03": 1.381834348042806
+    },
+    "dHd": 1.3817349523305893
+   }
+  },
+  "adamw_full_lr3e-4": {
+   "base": "adamw",
+   "measuredForgetting": 0.25264906883239746,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 55.15881112320543,
+    "kappa": 0.0009221873219292376,
+    "gradientTerm": -0.7528186365962029,
+    "halfDHd": 1.4028749018907547,
+    "predictedChange": 0.6500562652945518,
+    "exactChangeOnRows": 0.24487102031707764,
+    "finiteDifferenceDHd": {
+     "0.1": 2.814218401908874,
+     "0.03": 2.8070145183139372
+    },
+    "dHd": 2.8057498037815094
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 10.042736144248762,
+    "kappa": 0.023049207825868053,
+    "gradientTerm": -0.601985951885581,
+    "halfDHd": 1.1623317822813988,
+    "predictedChange": 0.5603458303958178,
+    "exactChangeOnRows": 0.1451670229434967,
+    "finiteDifferenceDHd": {
+     "0.1": 2.3275882005691524,
+     "0.03": 2.3247467146979437
+    },
+    "dHd": 2.3246635645627975
+   }
+  },
+  "adamw_full_lr5e-4": {
+   "base": "adamw",
+   "measuredForgetting": 0.7147042751312256,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 69.34493752301893,
+    "kappa": 0.0014466621783374713,
+    "gradientTerm": -0.9747351631522179,
+    "halfDHd": 3.478296935558319,
+    "predictedChange": 2.5035617724061012,
+    "exactChangeOnRows": 0.6686619520187378,
+    "finiteDifferenceDHd": {
+     "0.1": 7.094761729240417,
+     "0.03": 6.969670454661053
+    },
+    "dHd": 6.956593871116638
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 16.117526251912206,
+    "kappa": 0.022729470730035794,
+    "gradientTerm": -0.749190878123045,
+    "halfDHd": 2.9522701799869537,
+    "predictedChange": 2.2030793018639088,
+    "exactChangeOnRows": 0.4978984594345093,
+    "finiteDifferenceDHd": {
+     "0.1": 6.04429543018341,
+     "0.03": 5.897647804684109
+    },
+    "dHd": 5.9045403599739075
+   }
+  },
+  "adamw_full_lr8e-4": {
+   "base": "adamw",
+   "measuredForgetting": 1.4900124073028564,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 83.98544923222858,
+    "kappa": 0.004576295010625016,
+    "gradientTerm": -1.4004315324127674,
+    "halfDHd": 16.139575839042664,
+    "predictedChange": 14.739144306629896,
+    "exactChangeOnRows": 1.4457788467407227,
+    "finiteDifferenceDHd": {
+     "0.1": 54.402080178260796,
+     "0.03": 33.37601820627849
+    },
+    "dHd": 32.27915167808533
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 26.763579384508176,
+    "kappa": 0.04016298545555568,
+    "gradientTerm": -1.1461229398846626,
+    "halfDHd": 14.384155988693237,
+    "predictedChange": 13.238033048808575,
+    "exactChangeOnRows": 1.626518189907074,
+    "finiteDifferenceDHd": {
+     "0.1": 49.87376630306243,
+     "0.03": 29.803315798441567
+    },
+    "dHd": 28.768311977386475
+   }
+  },
+  "adamw_lora64_lr1e-3": {
+   "base": "adamw",
+   "measuredForgetting": -0.009175777435302734,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 16.770034425278748,
+    "kappa": 0.004239217084485208,
+    "gradientTerm": -0.5579147953540087,
+    "halfDHd": 0.5961061045527458,
+    "predictedChange": 0.038191309198737144,
+    "exactChangeOnRows": 0.019866347312927246,
+    "finiteDifferenceDHd": {
+     "0.1": 1.1923491954803465,
+     "0.03": 1.1924240324232316
+    },
+    "dHd": 1.1922122091054916
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 16.770034425278748,
+    "kappa": 0.004239217084485208,
+    "gradientTerm": -0.5579147953540087,
+    "halfDHd": 0.5961061045527458,
+    "predictedChange": 0.038191309198737144,
+    "exactChangeOnRows": 0.019866347312927246,
+    "finiteDifferenceDHd": {
+     "0.1": 1.1923491954803465,
+     "0.03": 1.1924240324232316
+    },
+    "dHd": 1.1922122091054916
+   }
+  },
+  "adamw_lora64_lr2e-3": {
+   "base": "adamw",
+   "measuredForgetting": 0.1743931770324707,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 26.06291696045688,
+    "kappa": 0.002721400994398582,
+    "gradientTerm": -0.6227467097342014,
+    "halfDHd": 0.9242907017469406,
+    "predictedChange": 0.3015439920127392,
+    "exactChangeOnRows": 0.19281849265098572,
+    "finiteDifferenceDHd": {
+     "0.1": 1.8254876136779783,
+     "0.03": 1.8433729807535808
+    },
+    "dHd": 1.8485814034938812
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 26.06291696045688,
+    "kappa": 0.002721400994398582,
+    "gradientTerm": -0.6227467097342014,
+    "halfDHd": 0.9242907017469406,
+    "predictedChange": 0.3015439920127392,
+    "exactChangeOnRows": 0.19281849265098572,
+    "finiteDifferenceDHd": {
+     "0.1": 1.8254876136779783,
+     "0.03": 1.8433729807535808
+    },
+    "dHd": 1.8485814034938812
+   }
+  },
+  "adamw_lora8_lr1e-3": {
+   "base": "adamw",
+   "measuredForgetting": -0.14805197715759277,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 10.13158153683342,
+    "kappa": 0.00565517276029991,
+    "gradientTerm": -0.4581477493047714,
+    "halfDHd": 0.29024875722825527,
+    "predictedChange": -0.16789899207651615,
+    "exactChangeOnRows": -0.12188205122947693,
+    "finiteDifferenceDHd": {
+     "0.1": 0.5803972482681273,
+     "0.03": 0.5806816948784721
+    },
+    "dHd": 0.5804975144565105
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 10.13158153683342,
+    "kappa": 0.00565517276029991,
+    "gradientTerm": -0.4581477493047714,
+    "halfDHd": 0.29024875722825527,
+    "predictedChange": -0.16789899207651615,
+    "exactChangeOnRows": -0.12188205122947693,
+    "finiteDifferenceDHd": {
+     "0.1": 0.5803972482681273,
+     "0.03": 0.5806816948784721
+    },
+    "dHd": 0.5804975144565105
+   }
+  },
+  "adamw_lora8_lr2e-3": {
+   "base": "adamw",
+   "measuredForgetting": -0.09194278717041016,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 15.364412754426617,
+    "kappa": 0.00335902962149581,
+    "gradientTerm": -0.5054889526218176,
+    "halfDHd": 0.3964749649167061,
+    "predictedChange": -0.1090139877051115,
+    "exactChangeOnRows": -0.08137792348861694,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7775217294692992,
+     "0.03": 0.7895297474331326
+    },
+    "dHd": 0.7929499298334122
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 15.364412754426617,
+    "kappa": 0.00335902962149581,
+    "gradientTerm": -0.5054889526218176,
+    "halfDHd": 0.3964749649167061,
+    "predictedChange": -0.1090139877051115,
+    "exactChangeOnRows": -0.08137792348861694,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7775217294692992,
+     "0.03": 0.7895297474331326
+    },
+    "dHd": 0.7929499298334122
+   }
+  },
+  "adamw_lora8_lr2e-3_seed1": {
+   "base": "adamw",
+   "measuredForgetting": -0.08659815788269043,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 15.439277080422574,
+    "kappa": 0.003648270536992641,
+    "gradientTerm": -0.5226961560547352,
+    "halfDHd": 0.4348214529454708,
+    "predictedChange": -0.08787470310926437,
+    "exactChangeOnRows": -0.06273174285888672,
+    "finiteDifferenceDHd": {
+     "0.1": 0.8639514446258544,
+     "0.03": 0.8686383565266927
+    },
+    "dHd": 0.8696429058909416
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 15.439277080422574,
+    "kappa": 0.003648270536992641,
+    "gradientTerm": -0.5226961560547352,
+    "halfDHd": 0.4348214529454708,
+    "predictedChange": -0.08787470310926437,
+    "exactChangeOnRows": -0.06273174285888672,
+    "finiteDifferenceDHd": {
+     "0.1": 0.8639514446258544,
+     "0.03": 0.8686383565266927
+    },
+    "dHd": 0.8696429058909416
+   }
+  },
+  "adamw_lora8_lr5e-3": {
+   "base": "adamw",
+   "measuredForgetting": 0.016487598419189453,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 24.75977229808631,
+    "kappa": 0.0019859852578030827,
+    "gradientTerm": -0.5479015354067087,
+    "halfDHd": 0.608750481158495,
+    "predictedChange": 0.06084894575178623,
+    "exactChangeOnRows": 0.03256210684776306,
+    "finiteDifferenceDHd": {
+     "0.1": 1.2178510427474973,
+     "0.03": 1.2173917558458116
+    },
+    "dHd": 1.21750096231699
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 24.75977229808631,
+    "kappa": 0.0019859852578030827,
+    "gradientTerm": -0.5479015354067087,
+    "halfDHd": 0.608750481158495,
+    "predictedChange": 0.06084894575178623,
+    "exactChangeOnRows": 0.03256210684776306,
+    "finiteDifferenceDHd": {
+     "0.1": 1.2178510427474973,
+     "0.03": 1.2173917558458116
+    },
+    "dHd": 1.21750096231699
+   }
+  },
+  "adamw_lora8_lr5e-3_seed1": {
+   "base": "adamw",
+   "measuredForgetting": 0.01954817771911621,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 24.59667184697594,
+    "kappa": 0.0019909265588705337,
+    "gradientTerm": -0.5559565909206867,
+    "halfDHd": 0.6022515669465065,
+    "predictedChange": 0.04629497602581978,
+    "exactChangeOnRows": 0.040365397930145264,
+    "finiteDifferenceDHd": {
+     "0.1": 1.1996626853942869,
+     "0.03": 1.20364957385593
+    },
+    "dHd": 1.204503133893013
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 24.59667184697594,
+    "kappa": 0.0019909265588705337,
+    "gradientTerm": -0.5559565909206867,
+    "halfDHd": 0.6022515669465065,
+    "predictedChange": 0.04629497602581978,
+    "exactChangeOnRows": 0.040365397930145264,
+    "finiteDifferenceDHd": {
+     "0.1": 1.1996626853942869,
+     "0.03": 1.20364957385593
+    },
+    "dHd": 1.204503133893013
+   }
+  },
+  "adamw_lora8_lr5e-4": {
+   "base": "adamw",
+   "measuredForgetting": -0.18244028091430664,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 6.444571020073227,
+    "kappa": 0.008928453014102241,
+    "gradientTerm": -0.41008245944976807,
+    "halfDHd": 0.18541046790778637,
+    "predictedChange": -0.2246719915419817,
+    "exactChangeOnRows": -0.16028356552124023,
+    "finiteDifferenceDHd": {
+     "0.1": 0.37125647068023676,
+     "0.03": 0.37110514110989035
+    },
+    "dHd": 0.37082093581557274
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 6.444571020073227,
+    "kappa": 0.008928453014102241,
+    "gradientTerm": -0.41008245944976807,
+    "halfDHd": 0.18541046790778637,
+    "predictedChange": -0.2246719915419817,
+    "exactChangeOnRows": -0.16028356552124023,
+    "finiteDifferenceDHd": {
+     "0.1": 0.37125647068023676,
+     "0.03": 0.37110514110989035
+    },
+    "dHd": 0.37082093581557274
+   }
+  },
+  "sam_full_lr1e-4": {
+   "base": "sam",
+   "measuredForgetting": -0.13642597198486328,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 30.916411666202848,
+    "kappa": 0.0005257490890096618,
+    "gradientTerm": -0.40737177431583405,
+    "halfDHd": 0.2512619327753782,
+    "predictedChange": -0.15610984154045582,
+    "exactChangeOnRows": -0.1205853819847107,
+    "finiteDifferenceDHd": {
+     "0.1": 0.5006581544876098,
+     "0.03": 0.5022353596157498
+    },
+    "dHd": 0.5025238655507565
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 5.0821022656204775,
+    "kappa": 0.017379148000754716,
+    "gradientTerm": -0.36153819784522057,
+    "halfDHd": 0.22443226166069508,
+    "predictedChange": -0.1371059361845255,
+    "exactChangeOnRows": -0.12009754776954651,
+    "finiteDifferenceDHd": {
+     "0.1": 0.44763982295989985,
+     "0.03": 0.4492865668402778
+    },
+    "dHd": 0.44886452332139015
+   }
+  },
+  "sam_full_lr2e-4": {
+   "base": "sam",
+   "measuredForgetting": -0.035831451416015625,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 49.09300233216212,
+    "kappa": 0.00042886819004926517,
+    "gradientTerm": -0.5116801429539919,
+    "halfDHd": 0.5168125182390213,
+    "predictedChange": 0.005132375285029411,
+    "exactChangeOnRows": -0.023712128400802612,
+    "finiteDifferenceDHd": {
+     "0.1": 1.0313540697097776,
+     "0.03": 1.033412085639106
+    },
+    "dHd": 1.0336250364780426
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 7.990257593240995,
+    "kappa": 0.013324286140614565,
+    "gradientTerm": -0.4346323162317276,
+    "halfDHd": 0.42533930391073227,
+    "predictedChange": -0.00929301232099533,
+    "exactChangeOnRows": -0.05742764472961426,
+    "finiteDifferenceDHd": {
+     "0.1": 0.8487015962600707,
+     "0.03": 0.8507900767856175
+    },
+    "dHd": 0.8506786078214645
+   }
+  },
+  "sam_full_lr3e-4": {
+   "base": "sam",
+   "measuredForgetting": 0.09050202369689941,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 62.72426334370818,
+    "kappa": 0.00043020344779892634,
+    "gradientTerm": -0.5878437459468842,
+    "halfDHd": 0.8462818562984467,
+    "predictedChange": 0.2584381103515625,
+    "exactChangeOnRows": 0.09924530982971191,
+    "finiteDifferenceDHd": {
+     "0.1": 1.691445708274841,
+     "0.03": 1.6926063431633844
+    },
+    "dHd": 1.6925637125968933
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 10.750067709277076,
+    "kappa": 0.011475897515338215,
+    "gradientTerm": -0.48508965969085693,
+    "halfDHd": 0.6631000563502312,
+    "predictedChange": 0.17801039665937424,
+    "exactChangeOnRows": 0.011391758918762207,
+    "finiteDifferenceDHd": {
+     "0.1": 1.3240635395050047,
+     "0.03": 1.3261040051778157
+    },
+    "dHd": 1.3262001127004623
+   }
+  },
+  "sam_full_lr5e-4": {
+   "base": "sam",
+   "measuredForgetting": 0.4074726104736328,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 84.04895614130015,
+    "kappa": 0.0005016280863098009,
+    "gradientTerm": -0.7465254105627537,
+    "halfDHd": 1.7718073427677155,
+    "predictedChange": 1.0252819322049618,
+    "exactChangeOnRows": 0.39319270849227905,
+    "finiteDifferenceDHd": {
+     "0.1": 3.59085202217102,
+     "0.03": 3.5478009117974176
+    },
+    "dHd": 3.543614685535431
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 16.62776855132582,
+    "kappa": 0.00929912139235442,
+    "gradientTerm": -0.5933128967881203,
+    "halfDHd": 1.285523034632206,
+    "predictedChange": 0.6922101378440857,
+    "exactChangeOnRows": 0.17296752333641052,
+    "finiteDifferenceDHd": {
+     "0.1": 2.6023387908935542,
+     "0.03": 2.573728561401367
+    },
+    "dHd": 2.571046069264412
+   }
+  },
+  "sam_full_lr8e-4": {
+   "base": "sam",
+   "measuredForgetting": 0.9020700454711914,
+   "numChangedTensors": 75,
+   "wholeUpdate": {
+    "updateNorm": 103.31653677502013,
+    "kappa": 0.0007524372609137746,
+    "gradientTerm": -0.962233692407608,
+    "halfDHd": 4.015873074531555,
+    "predictedChange": 3.053639382123947,
+    "exactChangeOnRows": 0.8681471943855286,
+    "finiteDifferenceDHd": {
+     "0.1": 8.176782727241514,
+     "0.03": 8.04318322075738
+    },
+    "dHd": 8.03174614906311
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 25.722479020350313,
+    "kappa": 0.009145787229407057,
+    "gradientTerm": -0.7496531121432781,
+    "halfDHd": 3.0256364345550537,
+    "predictedChange": 2.2759833224117756,
+    "exactChangeOnRows": 0.49986839294433594,
+    "finiteDifferenceDHd": {
+     "0.1": 6.163844466209411,
+     "0.03": 6.058547231886123
+    },
+    "dHd": 6.051272869110107
+   }
+  },
+  "sam_lora64_lr1e-3": {
+   "base": "sam",
+   "measuredForgetting": -0.0778663158416748,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 19.87491165297444,
+    "kappa": 0.001775491810886353,
+    "gradientTerm": -0.47190373204648495,
+    "halfDHd": 0.35067038610577583,
+    "predictedChange": -0.12123334594070911,
+    "exactChangeOnRows": -0.06326726078987122,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7015675306320189,
+     "0.03": 0.7013479868570963
+    },
+    "dHd": 0.7013407722115517
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 19.87491165297444,
+    "kappa": 0.001775491810886353,
+    "gradientTerm": -0.47190373204648495,
+    "halfDHd": 0.35067038610577583,
+    "predictedChange": -0.12123334594070911,
+    "exactChangeOnRows": -0.06326726078987122,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7015675306320189,
+     "0.03": 0.7013479868570963
+    },
+    "dHd": 0.7013407722115517
+   }
+  },
+  "sam_lora64_lr2e-3": {
+   "base": "sam",
+   "measuredForgetting": 0.03887486457824707,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 30.05565014480738,
+    "kappa": 0.001163441532490456,
+    "gradientTerm": -0.524158138781786,
+    "halfDHd": 0.525492861866951,
+    "predictedChange": 0.0013347230851650238,
+    "exactChangeOnRows": 0.049830615520477295,
+    "finiteDifferenceDHd": {
+     "0.1": 1.0526508092880247,
+     "0.03": 1.0515252749125164
+    },
+    "dHd": 1.050985723733902
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 30.05565014480738,
+    "kappa": 0.001163441532490456,
+    "gradientTerm": -0.524158138781786,
+    "halfDHd": 0.525492861866951,
+    "predictedChange": 0.0013347230851650238,
+    "exactChangeOnRows": 0.049830615520477295,
+    "finiteDifferenceDHd": {
+     "0.1": 1.0526508092880247,
+     "0.03": 1.0515252749125164
+    },
+    "dHd": 1.050985723733902
+   }
+  },
+  "sam_lora64_lr3e-3": {
+   "base": "sam",
+   "measuredForgetting": 0.16119956970214844,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 37.97582818133394,
+    "kappa": 0.0010895044947193285,
+    "gradientTerm": -0.569015009328723,
+    "halfDHd": 0.7856218218803406,
+    "predictedChange": 0.21660681255161762,
+    "exactChangeOnRows": 0.16722795367240906,
+    "finiteDifferenceDHd": {
+     "0.1": 1.570513844490051,
+     "0.03": 1.571178436279297
+    },
+    "dHd": 1.5712436437606812
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 37.97582818133394,
+    "kappa": 0.0010895044947193285,
+    "gradientTerm": -0.569015009328723,
+    "halfDHd": 0.7856218218803406,
+    "predictedChange": 0.21660681255161762,
+    "exactChangeOnRows": 0.16722795367240906,
+    "finiteDifferenceDHd": {
+     "0.1": 1.570513844490051,
+     "0.03": 1.571178436279297
+    },
+    "dHd": 1.5712436437606812
+   }
+  },
+  "sam_lora8_lr1e-3": {
+   "base": "sam",
+   "measuredForgetting": -0.16304731369018555,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 12.145488903708483,
+    "kappa": 0.002457314825641409,
+    "gradientTerm": -0.3845261801034212,
+    "halfDHd": 0.18124281894415617,
+    "predictedChange": -0.20328336115926504,
+    "exactChangeOnRows": -0.14922702312469482,
+    "finiteDifferenceDHd": {
+     "0.1": 0.3626167774200439,
+     "0.03": 0.3625949223836263
+    },
+    "dHd": 0.36248563788831234
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 12.145488903708483,
+    "kappa": 0.002457314825641409,
+    "gradientTerm": -0.3845261801034212,
+    "halfDHd": 0.18124281894415617,
+    "predictedChange": -0.20328336115926504,
+    "exactChangeOnRows": -0.14922702312469482,
+    "finiteDifferenceDHd": {
+     "0.1": 0.3626167774200439,
+     "0.03": 0.3625949223836263
+    },
+    "dHd": 0.36248563788831234
+   }
+  },
+  "sam_lora8_lr2e-3": {
+   "base": "sam",
+   "measuredForgetting": -0.11578893661499023,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 18.62467738966633,
+    "kappa": 0.0018401813380479568,
+    "gradientTerm": -0.4576212577521801,
+    "halfDHd": 0.3191597703844309,
+    "predictedChange": -0.13846148736774921,
+    "exactChangeOnRows": -0.10783189535140991,
+    "finiteDifferenceDHd": {
+     "0.1": 0.6375372409820556,
+     "0.03": 0.6384319729275173
+    },
+    "dHd": 0.6383195407688618
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 18.62467738966633,
+    "kappa": 0.0018401813380479568,
+    "gradientTerm": -0.4576212577521801,
+    "halfDHd": 0.3191597703844309,
+    "predictedChange": -0.13846148736774921,
+    "exactChangeOnRows": -0.10783189535140991,
+    "finiteDifferenceDHd": {
+     "0.1": 0.6375372409820556,
+     "0.03": 0.6384319729275173
+    },
+    "dHd": 0.6383195407688618
+   }
+  },
+  "sam_lora8_lr2e-3_seed1": {
+   "base": "sam",
+   "measuredForgetting": -0.11537909507751465,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 18.82723698401542,
+    "kappa": 0.002149720184002451,
+    "gradientTerm": -0.4927931874990463,
+    "halfDHd": 0.3810001239180565,
+    "predictedChange": -0.11179306358098984,
+    "exactChangeOnRows": -0.10397842526435852,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7610350847244262,
+     "0.03": 0.761813587612576
+    },
+    "dHd": 0.762000247836113
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 18.82723698401542,
+    "kappa": 0.002149720184002451,
+    "gradientTerm": -0.4927931874990463,
+    "halfDHd": 0.3810001239180565,
+    "predictedChange": -0.11179306358098984,
+    "exactChangeOnRows": -0.10397842526435852,
+    "finiteDifferenceDHd": {
+     "0.1": 0.7610350847244262,
+     "0.03": 0.761813587612576
+    },
+    "dHd": 0.762000247836113
+   }
+  },
+  "sam_lora8_lr5e-3": {
+   "base": "sam",
+   "measuredForgetting": -0.015103816986083984,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 30.83318754797485,
+    "kappa": 0.0011063196662938284,
+    "gradientTerm": -0.5228561051189899,
+    "halfDHd": 0.5258810073137283,
+    "predictedChange": 0.003024902194738388,
+    "exactChangeOnRows": -0.009276330471038818,
+    "finiteDifferenceDHd": {
+     "0.1": 1.0531842708587644,
+     "0.03": 1.0519888665941028
+    },
+    "dHd": 1.0517620146274567
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 30.83318754797485,
+    "kappa": 0.0011063196662938284,
+    "gradientTerm": -0.5228561051189899,
+    "halfDHd": 0.5258810073137283,
+    "predictedChange": 0.003024902194738388,
+    "exactChangeOnRows": -0.009276330471038818,
+    "finiteDifferenceDHd": {
+     "0.1": 1.0531842708587644,
+     "0.03": 1.0519888665941028
+    },
+    "dHd": 1.0517620146274567
+   }
+  },
+  "sam_lora8_lr5e-3_seed1": {
+   "base": "sam",
+   "measuredForgetting": -0.012379884719848633,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 30.79676669027713,
+    "kappa": 0.0013407645092669309,
+    "gradientTerm": -0.5604568347334862,
+    "halfDHd": 0.6358179077506065,
+    "predictedChange": 0.07536107301712036,
+    "exactChangeOnRows": -0.000530928373336792,
+    "finiteDifferenceDHd": {
+     "0.1": 1.2667119503021238,
+     "0.03": 1.2713008456759982
+    },
+    "dHd": 1.271635815501213
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 30.79676669027713,
+    "kappa": 0.0013407645092669309,
+    "gradientTerm": -0.5604568347334862,
+    "halfDHd": 0.6358179077506065,
+    "predictedChange": 0.07536107301712036,
+    "exactChangeOnRows": -0.000530928373336792,
+    "finiteDifferenceDHd": {
+     "0.1": 1.2667119503021238,
+     "0.03": 1.2713008456759982
+    },
+    "dHd": 1.271635815501213
+   }
+  },
+  "sam_lora8_lr5e-4": {
+   "base": "sam",
+   "measuredForgetting": -0.18911457061767578,
+   "numChangedTensors": 56,
+   "wholeUpdate": {
+    "updateNorm": 7.56742559763763,
+    "kappa": 0.004013029062254154,
+    "gradientTerm": -0.3342331741005182,
+    "halfDHd": 0.11490492103621364,
+    "predictedChange": -0.2193282530643046,
+    "exactChangeOnRows": -0.17505013942718506,
+    "finiteDifferenceDHd": {
+     "0.1": 0.2282142639160156,
+     "0.03": 0.2299083603752984
+    },
+    "dHd": 0.22980984207242727
+   },
+   "attentionAndMlpOnly": {
+    "updateNorm": 7.56742559763763,
+    "kappa": 0.004013029062254154,
+    "gradientTerm": -0.3342331741005182,
+    "halfDHd": 0.11490492103621364,
+    "predictedChange": -0.2193282530643046,
+    "exactChangeOnRows": -0.17505013942718506,
+    "finiteDifferenceDHd": {
+     "0.1": 0.2282142639160156,
+     "0.03": 0.2299083603752984
+    },
+    "dHd": 0.22980984207242727
+   }
+  }
+ },
+ "skipped": [
+  "adamw_cooldown_dclm_lr5e-4",
+  "adamw_lora64_lr3e-3",
+  "adamw_lora64_lr5e-3",
+  "adamw_lora8_lr1e-2",
+  "sam_cooldown_dclm_lr5e-4",
+  "sam_lora64_lr5e-3",
+  "sam_lora8_lr1e-2"
+ ]
+}
