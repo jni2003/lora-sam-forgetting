@@ -48,10 +48,13 @@ def loadBaseModel(base, device): # base model ready for second derivatives: eage
 
 
 def runMetadata(runName, base): # (measured forgetting, is the run diverged?) from the eval JSONs
-    run = json.loads((resultsDir / f"{runName}.json").read_text())["eval"]
+    run = json.loads((resultsDir / f"{runName}.json").read_text())
     baseEval = json.loads((resultsDir / f"base_eval_{base}.json").read_text())["datasets"]
-    forgetting = run["dclm_heldout"]["loss"] - baseEval["dclm_heldout"]["loss"]
-    isDiverged = run["starcoder_val"]["loss"] > baseEval["starcoder_val"]["loss"]  # same rule as the plots
+    forgetting = run["eval"]["dclm_heldout"]["loss"] - baseEval["dclm_heldout"]["loss"]
+    # Diverged = worse on StarCoder than before fine-tuning (same rule as the plots). Only for StarCoder
+    # runs: the DCLM checks never trained on code, so a worse StarCoder loss is expected there, not divergence.
+    isTrainedOnStarcoder = "starcoder" in run["args"]["train_data"]
+    isDiverged = isTrainedOnStarcoder and run["eval"]["starcoder_val"]["loss"] > baseEval["starcoder_val"]["loss"]
     return forgetting, isDiverged
 
 
