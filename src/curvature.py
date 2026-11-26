@@ -64,6 +64,32 @@ def finiteDifferenceCurvature(computeLoss, model, direction, eps=1e-3):  # dᵀH
     return curvature
 
 
+def directionalDerivative(computeLoss, model, direction): # gᵀd: the first-order change of the loss along d
+    # Watts et al. drop this term because pretraining ends near a minimum (g ≈ 0); measuring it checks that.
+    parameters = dict(model.named_parameters())
+    names = list(direction)
+    gradients = torch.autograd.grad(computeLoss(model), [parameters[name] for name in names])
+    gradientDotDirection = sum((gradient * direction[name]).sum() for gradient, name in zip(gradients, names)).item()
+    return gradientDotDirection
+
+
+@torch.no_grad()
+def lossChange(computeLoss, model, direction): # L(θ+d) - L(θ): the exact change that Eq. 3 approximates; restores the weights
+    parameters = dict(model.named_parameters())
+    originalWeights = {name: parameters[name].clone() for name in direction}
+    lossBefore = computeLoss(model).item()
+
+    # Take the whole step d, measure, then put the exact original weights back
+    for name, directionPart in direction.items():
+        parameters[name].copy_(originalWeights[name] + directionPart)
+    lossAfter = computeLoss(model).item()
+    for name in direction:
+        parameters[name].copy_(originalWeights[name])
+
+    change = lossAfter - lossBefore
+    return change
+
+
 def rankOneDirection(model, name, u, sigma, v):  # σ·u vᵀ in one weight matrix, zero elsewhere: one intruder's piece
     weight = dict(model.named_parameters())[name]
     intruderPiece = (sigma * torch.outer(u, v)).to(dtype=weight.dtype, device=weight.device)

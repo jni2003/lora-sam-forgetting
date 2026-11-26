@@ -6,7 +6,8 @@ import torch
 from torch.func import functional_call
 from transformers import LlamaConfig, LlamaForCausalLM
 
-from src.curvature import (directionalCurvature, finiteDifferenceCurvature, hessianVectorProduct, intruderForgettingShare,
+from src.curvature import (directionalCurvature, directionalDerivative, finiteDifferenceCurvature, hessianVectorProduct,
+                           intruderForgettingShare, lossChange,
                            makeChunkedLanguageModelLosses, meanOverChunks,
                            innerProduct, makeLanguageModelLoss, rankOneDirection)
 
@@ -168,3 +169,19 @@ def test_averaging_one_row_at_a_time_gives_the_full_batch_curvature():
 
     with pytest.raises(ValueError):
         makeChunkedLanguageModelLosses(inputIds, rowsPerChunk=3)  # 4 rows can't split evenly into 3s
+
+
+def test_gradient_term_and_exact_loss_change_on_a_quadratic():
+    # For a quadratic, Eq. 3 with the gradient term is exact: L(θ+d) - L(θ) = gᵀd + ½ dᵀHd.
+    model = Quadratic()
+    computeLoss = lambda m: m.loss()
+    step = {"theta": torch.randn(6, generator=torch.Generator().manual_seed(7))}
+    thetaBefore = model.theta.detach().clone()
+
+    expectedGradientTerm = ((model.A @ model.theta + model.b) @ step["theta"]).item()  # g = Aθ + b
+    gradientTerm = directionalDerivative(computeLoss, model, step)
+    assert abs(gradientTerm - expectedGradientTerm) < 1e-10
+
+    dHd, _ = directionalCurvature(computeLoss, model, step)
+    assert abs(lossChange(computeLoss, model, step) - (gradientTerm + 0.5 * dHd)) < 1e-9
+    assert torch.equal(model.theta.detach(), thetaBefore)  # weights restored after measuring
