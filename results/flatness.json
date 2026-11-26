@@ -1,0 +1,63 @@
+{
+ "settings": {
+  "bases": [
+   "sam",
+   "adamw"
+  ],
+  "base_dir": "checkpoints",
+  "data": "data/dclm_heldout.npy",
+  "rows": 8,
+  "rows_per_chunk": 1,
+  "lanczos_steps": 20,
+  "lanczos_check_steps": 15,
+  "hutchinson_samples": 50,
+  "out": "results/flatness.json",
+  "device": "cuda",
+  "minutes": 3.9899279356002806,
+  "peakGpuMemoryGB": 8.487158272
+ },
+ "bases": {
+  "sam": {
+   "numWeights": 33554432,
+   "topEigenvalues": [
+    70.68869825352354,
+    68.76094198212293,
+    66.10838609996291,
+    50.37753614513463,
+    47.105314546027856
+   ],
+   "bottomEigenvalues": [
+    -25.024563147441686,
+    -28.958476065953043,
+    -36.906379230965754,
+    -42.647231522524756,
+    -67.04010683464337
+   ],
+   "topEigenvalueWithFewerSteps": 70.68508354973196,
+   "trace": 23799.1653515625,
+   "traceStandardError": 111.7254645397796,
+   "averageCurvature": 0.0007092703983653337
+  },
+  "adamw": {
+   "numWeights": 33554432,
+   "topEigenvalues": [
+    1105.1559084982734,
+    583.3655019971712,
+    518.1038340666308,
+    497.6575825395663,
+    470.7153712981407
+   ],
+   "bottomEigenvalues": [
+    -122.25588459588923,
+    -170.71856981875544,
+    -201.67654017189767,
+    -248.0099607340786,
+    -376.6307889606828
+   ],
+   "topEigenvalueWithFewerSteps": 1105.1559084982737,
+   "trace": 106940.846875,
+   "traceStandardError": 808.5397392357528,
+   "averageCurvature": 0.003187085594981909
+  }
+ }
+}
