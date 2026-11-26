@@ -70,6 +70,21 @@ def rankOneDirection(model, name, u, sigma, v):  # σ·u vᵀ in one weight matr
     return {name: intruderPiece}
 
 
+def makeChunkedLanguageModelLosses(inputIds, rowsPerChunk): # one loss function per equal-size chunk of rows
+    # The loss is a mean over equal-size chunks, so its Hessian (and κ, and finite differences) is the
+    # mean of the chunks' too: averaging per-chunk results is exact and keeps only one chunk's graph in memory.
+    if len(inputIds) % rowsPerChunk != 0:
+        raise ValueError(f"{len(inputIds)} rows don't split into chunks of {rowsPerChunk}; unequal chunks would be weighted wrongly")
+    lossChunks = [makeLanguageModelLoss(chunk) for chunk in inputIds.split(rowsPerChunk)]
+    return lossChunks
+
+
+def meanOverChunks(measure, lossChunks): # average of measure(computeLoss) over the chunks, e.g. κ along one direction
+    values = [measure(computeLoss) for computeLoss in lossChunks]
+    mean = sum(values) / len(values)
+    return mean
+
+
 def intruderForgettingShare(intruders): # Σ ½ ‖uᵀΔW‖² κ over intruder entries: Watts et al. Eq. 3 per intruder's piece of the update
     # Uses the update's size along u (updateNormAlongU), not σ: σ measures the fine-tuned weight's
     # piece, which for directions the base already had is mostly base weights, not change.

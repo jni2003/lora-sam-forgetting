@@ -7,6 +7,7 @@ from torch.func import functional_call
 from transformers import LlamaConfig, LlamaForCausalLM
 
 from src.curvature import (directionalCurvature, finiteDifferenceCurvature, hessianVectorProduct, intruderForgettingShare,
+                           makeChunkedLanguageModelLosses, meanOverChunks,
                            innerProduct, makeLanguageModelLoss, rankOneDirection)
 
 
@@ -148,3 +149,22 @@ def test_intruder_forgetting_share_uses_update_size_not_sigma():
     expected = 0.5 * 2.0**2 * 0.5 + 0.5 * 3.0**2 * (-0.1)  # = 1.0 - 0.45 = 0.55, worked by hand
     assert abs(intruderForgettingShare(intruders) - expected) < 1e-12
     assert intruderForgettingShare([]) == 0  # no intruders, no share
+
+
+def test_averaging_one_row_at_a_time_gives_the_full_batch_curvature():
+    # The fix for running out of memory: κ per single row, averaged, must equal κ on all rows at once.
+    torch.manual_seed(0)
+    config = LlamaConfig(vocab_size=64, hidden_size=16, intermediate_size=32, num_hidden_layers=2,
+                         num_attention_heads=2, max_position_embeddings=32, tie_word_embeddings=False,
+                         initializer_range=0.3, attn_implementation="eager")
+    model = LlamaForCausalLM(config).double().eval()
+    inputIds = torch.randint(0, 64, (4, 12), generator=torch.Generator().manual_seed(5))
+    direction = randomDirection(model)
+
+    _, kappaAllRows = directionalCurvature(makeLanguageModelLoss(inputIds), model, direction)
+    lossChunks = makeChunkedLanguageModelLosses(inputIds, rowsPerChunk=1)
+    kappaAveraged = meanOverChunks(lambda computeLoss: directionalCurvature(computeLoss, model, direction)[1], lossChunks)
+    assert abs(kappaAveraged - kappaAllRows) < 1e-10 * abs(kappaAllRows)
+
+    with pytest.raises(ValueError):
+        makeChunkedLanguageModelLosses(inputIds, rowsPerChunk=3)  # 4 rows can't split evenly into 3s

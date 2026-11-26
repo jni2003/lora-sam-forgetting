@@ -13,4 +13,4 @@
 
 set -euo pipefail
 nvidia-smi  # log which GPU we got
-bash scripts/slurm/run_in_env.sh python -m scripts.curvatureAlongIntruders "$@"
+bash scripts/slurm/run_in_env.sh python -u -m scripts.curvatureAlongIntruders "$@"

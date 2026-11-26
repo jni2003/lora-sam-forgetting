@@ -27,7 +27,8 @@ import torch
 from transformers import LlamaForCausalLM
 
 from src.convert import load_olmo_as_llama
-from src.curvature import directionalCurvature, finiteDifferenceCurvature, makeLanguageModelLoss, rankOneDirection
+from src.curvature import (directionalCurvature, finiteDifferenceCurvature, makeChunkedLanguageModelLosses,
+                           meanOverChunks, rankOneDirection)
 from src.intruders import leftSingular, maxSimilarities, topSingularTriplets
 
 MATRIX_TYPES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]  # same as LoRA targets
@@ -38,7 +39,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--runs", nargs="+", required=True, help="fine-tuned checkpoint folders")
 parser.add_argument("--base-dir", default="checkpoints", help="folder holding olmo-60m-{sam,adamw}")
 parser.add_argument("--data", default="data/dclm_heldout.npy", help="DCLM rows for the pretraining loss")
-parser.add_argument("--rows", type=int, default=8, help="rows of 1024 tokens per Hessian-vector product")
+parser.add_argument("--rows", type=int, default=8, help="rows of 1024 tokens in the DCLM batch")
+parser.add_argument("--rows-per-chunk", type=int, default=1, help="rows processed at once; results are averaged (exact), memory scales with this")
 parser.add_argument("--k", type=int, default=10, help="top-k fine-tuned singular vectors (Shuttleworth: 10)")
 parser.add_argument("--random-per-matrix", type=int, default=3, help="random baseline directions per matrix")
 parser.add_argument("--finite-difference-checks", type=int, default=3, help="directions to spot-check")
@@ -59,7 +61,12 @@ def loadBaseModel(base, device): # base model ready for second derivatives: eage
     return model.to(device)
 
 
-def randomBaselineKappas(model, computeLoss, matrixNames, generator): # {matrix: [κ along random unit u vᵀ]}
+def chunkedKappa(model, lossChunks, direction): # κ along direction on the whole batch, averaged chunk by chunk (exact)
+    kappa = meanOverChunks(lambda computeLoss: directionalCurvature(computeLoss, model, direction)[1], lossChunks)
+    return kappa
+
+
+def randomBaselineKappas(model, lossChunks, matrixNames, generator): # {matrix: [κ along random unit u vᵀ]}
     kappas = {}
     for name in matrixNames:
         numRows, numCols = dict(model.named_parameters())[name].shape
@@ -68,12 +75,11 @@ def randomBaselineKappas(model, computeLoss, matrixNames, generator): # {matrix:
             u = torch.randn(numRows, generator=generator, dtype=torch.float64)
             v = torch.randn(numCols, generator=generator, dtype=torch.float64)
             direction = rankOneDirection(model, name, u / u.norm(), 1.0, v / v.norm())
-            _, kappa = directionalCurvature(computeLoss, model, direction)
-            kappas[name].append(kappa)
+            kappas[name].append(chunkedKappa(model, lossChunks, direction))
     return kappas
 
 
-def topDirectionKappas(model, computeLoss, baseWeights, baseU, tunedWeights, matrixNames): # {matrix: [one entry per top-k vector]}
+def topDirectionKappas(model, lossChunks, baseWeights, baseU, tunedWeights, matrixNames): # {matrix: [one entry per top-k vector]}
     matrices = {}
     for name in matrixNames:
         maxSims, _ = maxSimilarities(baseU[name], tunedWeights[name], args.k)
@@ -82,7 +88,7 @@ def topDirectionKappas(model, computeLoss, baseWeights, baseU, tunedWeights, mat
         entries = []
         for i in range(args.k):
             direction = rankOneDirection(model, name, U[:, i], 1.0, Vh[i])
-            _, kappa = directionalCurvature(computeLoss, model, direction)
+            kappa = chunkedKappa(model, lossChunks, direction)
             entries.append({
                 "sigma": S[i].item(),
                 "maxSim": maxSims[i],
@@ -94,13 +100,14 @@ def topDirectionKappas(model, computeLoss, baseWeights, baseU, tunedWeights, mat
     return matrices
 
 
-def finiteDifferenceSpotChecks(model, computeLoss, tunedWeights, matrixNames, runName): # κ from the HVP vs from loss values
+def finiteDifferenceSpotChecks(model, lossChunks, tunedWeights, matrixNames, runName): # κ from the HVP vs from loss values
     checks = []
     for name in matrixNames[: args.finite_difference_checks]:
         U, _, Vh = topSingularTriplets(tunedWeights[name], 1)
         direction = rankOneDirection(model, name, U[:, 0], 1.0, Vh[0])
-        _, kappa = directionalCurvature(computeLoss, model, direction)
-        byStep = {str(eps): finiteDifferenceCurvature(computeLoss, model, direction, eps)
+        kappa = chunkedKappa(model, lossChunks, direction)
+        byStep = {str(eps): meanOverChunks(lambda computeLoss: finiteDifferenceCurvature(computeLoss, model, direction, eps),
+                                           lossChunks)
                   for eps in FINITE_DIFFERENCE_STEPS}  # d is unit length, so dᵀHd = κ
         checks.append({"run": runName, "matrix": name, "kappaHvp": kappa, "finiteDifference": byStep})
     return checks
@@ -118,10 +125,10 @@ def printSummary(runName, matrices, randomKappas): # mean κ: intruders vs other
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 inputIds = torch.from_numpy(np.load(args.data)[: args.rows].astype(np.int64)).to(device)
-computeLoss = makeLanguageModelLoss(inputIds)  # pretraining (DCLM) loss on a fixed batch: H is its Hessian
+lossChunks = makeChunkedLanguageModelLosses(inputIds, args.rows_per_chunk)  # pretraining (DCLM) loss: H is its Hessian
 generator = torch.Generator().manual_seed(args.seed)
 
-results = {"settings": {"rows": args.rows, "k": args.k, "data": args.data, "seed": args.seed,
+results = {"settings": {"rows": args.rows, "rowsPerChunk": args.rows_per_chunk, "k": args.k, "data": args.data, "seed": args.seed,
                         "randomPerMatrix": args.random_per_matrix},
            "randomBaselines": {}, "runs": {}, "finiteDifferenceChecks": []}
 runsByBase = {}  # base -> run folders, so each base model is loaded once
@@ -138,19 +145,20 @@ for base, runDirs in runsByBase.items():
     matrixNames = list(baseWeights)[: args.max_matrices]
 
     # Random baseline: depends only on the base model, so it's done once per base
-    results["randomBaselines"][base] = randomBaselineKappas(model, computeLoss, matrixNames, generator)
+    results["randomBaselines"][base] = randomBaselineKappas(model, lossChunks, matrixNames, generator)
 
     # Each run on this base: κ along every top-k fine-tuned direction, at the base weights
     for runDir in runDirs:
         runName = Path(runDir).name
+        print(f"run {runName}: measuring κ along the top-{args.k} directions of {len(matrixNames)} matrices ...")
         tunedWeights = attentionAndMlpWeights(LlamaForCausalLM.from_pretrained(runDir))
-        matrices = topDirectionKappas(model, computeLoss, baseWeights, baseU, tunedWeights, matrixNames)
+        matrices = topDirectionKappas(model, lossChunks, baseWeights, baseU, tunedWeights, matrixNames)
         results["runs"][runName] = {"base": base, "matrices": matrices}
         printSummary(runName, matrices, results["randomBaselines"][base])
 
         # Spot check on the first run only: it validates the method, not each run
         if not results["finiteDifferenceChecks"]:
-            results["finiteDifferenceChecks"] = finiteDifferenceSpotChecks(model, computeLoss, tunedWeights,
+            results["finiteDifferenceChecks"] = finiteDifferenceSpotChecks(model, lossChunks, tunedWeights,
                                                                            matrixNames, runName)
     del model
 
